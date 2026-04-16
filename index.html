@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Álcool por Pessoa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e0f;
+      --surface: #181819;
+      --surface2: #222224;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0ede8;
+      --muted: #888784;
+      --accent: #e8c76a;
+      --accent-dim: rgba(232,199,106,0.12);
+      --accent-dim2: rgba(232,199,106,0.22);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+    }
+
+    .container { width: 100%; max-width: 480px; }
+
+    .eyebrow {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 36px; font-weight: 800;
+      line-height: 1.1; color: var(--text); margin-bottom: 10px;
+    }
+
+    .subtitle { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 2.5rem; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px; margin-top: 2rem;
+    }
+
+    .pessoas-card {
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-dim2);
+      border-radius: 14px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .pessoas-label {
+      flex: 1; font-family: 'Syne', sans-serif;
+      font-size: 14px; font-weight: 600; color: var(--accent);
+    }
+
+    .counter { display: flex; align-items: center; gap: 10px; }
+
+    .btn-c {
+      width: 34px; height: 34px; border-radius: 8px;
+      border: 1px solid var(--accent-dim2); background: transparent;
+      color: var(--accent); font-size: 20px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-c:hover { background: var(--accent-dim); }
+
+    .count-num {
+      min-width: 32px; text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 20px; font-weight: 700; color: var(--accent);
+    }
+
+    .drink-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 18px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 14px;
+      transition: border-color 0.15s;
+    }
+    .drink-card:hover { border-color: var(--border2); }
+
+    .drink-icon { font-size: 22px; width: 30px; text-align: center; flex-shrink: 0; }
+    .drink-info { flex: 1; }
+    .drink-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .drink-detail { font-size: 12px; color: var(--muted); }
+
+    .btn-drink {
+      width: 30px; height: 30px; border-radius: 7px;
+      border: 1px solid var(--border2); background: var(--surface2);
+      color: var(--text); font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.12s; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-drink:hover { background: rgba(255,255,255,0.08); }
+
+    .count-drink {
+      min-width: 26px; text-align: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px; font-weight: 700; color: var(--text);
+    }
+
+    .calc-btn {
+      width: 100%; padding: 16px; margin-top: 1.5rem;
+      background: var(--accent); border: none; border-radius: 12px;
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      color: #0e0e0f; cursor: pointer; letter-spacing: 0.04em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .calc-btn:hover { opacity: 0.88; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    .result {
+      display: none; margin-top: 2rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+
+    .result-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+    .result-header-label {
+      font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .result-big { font-family: 'Syne', sans-serif; font-size: 42px; font-weight: 800; line-height: 1; }
+    .result-big span { font-size: 18px; font-weight: 500; color: var(--muted); margin-left: 4px; }
+
+    .result-rows { padding: 4px 0; }
+    .result-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 20px; border-bottom: 1px solid var(--border); font-size: 13px;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row-label { color: var(--muted); }
+    .result-row-val { font-family: 'Syne', sans-serif; font-weight: 600; color: var(--text); }
+
+    .result-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 20px; background: var(--surface2);
+      border-top: 1px solid var(--border); font-size: 13px;
+    }
+    .result-total-label { color: var(--muted); }
+    .result-total-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--text); }
+
+    .faixa-wrap { margin: 0; padding: 20px; border-top: 1px solid var(--border); }
+
+    .faixa-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 13px; border-radius: 999px;
+      font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px;
+      background: var(--fc-bg, rgba(136,135,132,0.1));
+      color: var(--fc, #888784);
+    }
+
+    .faixa-titulo {
+      font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+      margin-bottom: 8px; line-height: 1.2;
+      color: var(--fc, #888784);
+    }
+
+    .faixa-texto { font-size: 14px; line-height: 1.65; color: var(--muted); }
+
+    .faixa-dicas { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+
+    .faixa-dica { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--muted); }
+    .faixa-dica-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; color: var(--fc, #888784); }
+
+    .footer {
+      margin-top: 3rem; font-size: 12px;
+      color: var(--muted); text-align: center; line-height: 1.6;
+    }
+
+    @media (max-width: 420px) {
+      h1 { font-size: 28px; }
+      .result-big { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <p class="eyebrow">Calculadora</p>
+  <h1>Álcool por<br>Pessoa</h1>
+  <p class="subtitle">Informe o que foi consumido na mesa e descubra quanto de álcool coube a cada pessoa.</p>
+
+  <p class="section-label">Pessoas na mesa</p>
+  <div class="pessoas-card">
+    <span style="font-size:22px">👥</span>
+    <span class="pessoas-label">Número de pessoas</span>
+    <div class="counter">
+      <button class="btn-c" onclick="change('pessoas',-1)">−</button>
+      <span class="count-num" id="val-pessoas">2</span>
+      <button class="btn-c" onclick="change('pessoas',1)">+</button>
+    </div>
+  </div>
+
+  <p class="section-label">Bebidas consumidas</p>
+
+  <div class="drink-card">
+    <span class="drink-icon">🍺</span>
+    <div class="drink-info">
+      <div class="drink-name">Cerveja 600ml</div>
+      <div class="drink-detail">~27g de álcool puro (5% alc.)</div>
+    </div>
+    <div class="counter">
+      <button class="btn-drink" onclick="change('cerv',-1)">−</button>
+      <span class="count-drink" id="val-cerv">0</span>
+      <button class="btn-drink" onclick="change('cerv',1)">+</button>
+    </div>
+  </div>
+
+  <div class="drink-card">
+    <span class="drink-icon">🍋</span>
+    <div class="drink-info">
+      <div class="drink-name">Caipirinha 150ml</div>
+      <div class="drink-detail">~18g de álcool (cachaça 40% alc.)</div>
+    </div>
+    <div class="counter">
+      <button class="btn-drink" onclick="change('caip',-1)">−</button>
+      <span class="count-drink" id="val-caip">0</span>
+      <button class="btn-drink" onclick="change('caip',1)">+</button>
+    </div>
+  </div>
+
+  <div class="drink-card">
+    <span class="drink-icon">🥃</span>
+    <div class="drink-info">
+      <div class="drink-name">Dose de cachaça 50ml</div>
+      <div class="drink-detail">~16g de álcool (40% alc.)</div>
+    </div>
+    <div class="counter">
+      <button class="btn-drink" onclick="change('cach',-1)">−</button>
+      <span class="count-drink" id="val-cach">0</span>
+      <button class="btn-drink" onclick="change('cach',1)">+</button>
+    </div>
+  </div>
+
+  <div class="drink-card">
+    <span class="drink-icon">🍹</span>
+    <div class="drink-info">
+      <div class="drink-name">Outros drinks</div>
+      <div class="drink-detail">~16g por unidade (equiv. dose)</div>
+    </div>
+    <div class="counter">
+      <button class="btn-drink" onclick="change('outro',-1)">−</button>
+      <span class="count-drink" id="val-outro">0</span>
+      <button class="btn-drink" onclick="change('outro',1)">+</button>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcular()">Calcular →</button>
+
+  <div class="result" id="resultado">
+    <div class="result-header">
+      <div class="result-header-label">Álcool por pessoa</div>
+      <div class="result-big" id="r-por-pessoa">0<span>g</span></div>
+    </div>
+    <div class="result-rows">
+      <div class="result-row">
+        <span class="result-row-label">Cervejas (<span id="r-cerv">0</span> × 27g)</span>
+        <span class="result-row-val"><span id="r-cerv-g">0</span>g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Caipirinhas (<span id="r-caip">0</span> × 18g)</span>
+        <span class="result-row-val"><span id="r-caip-g">0</span>g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Doses de cachaça (<span id="r-cach">0</span> × 16g)</span>
+        <span class="result-row-val"><span id="r-cach-g">0</span>g</span>
+      </div>
+      <div class="result-row">
+        <span class="result-row-label">Outros drinks (<span id="r-outro">0</span> × 16g)</span>
+        <span class="result-row-val"><span id="r-outro-g">0</span>g</span>
+      </div>
+    </div>
+    <div class="result-total-row">
+      <span class="result-total-label">Total da mesa (<span id="r-pessoas">2</span> pessoas)</span>
+      <span class="result-total-val"><span id="r-total-g">0</span>g no total</span>
+    </div>
+    <div class="faixa-wrap" id="faixa-wrap"></div>
+  </div>
+
+  <p class="footer">
+    Valores de referência: OMS / ANVISA<br>
+    Esta calculadora é informativa. Não dirija após beber.
+  </p>
+
+</div>
+<script>
+  const state = { pessoas:2, cerv:0, caip:0, cach:0, outro:0 };
+  const gramas = { cerv:27, caip:18, cach:16, outro:16 };
+
+  const faixas = [
+    {
+      min: 0, max: 0,
+      cor: '#888784', corbg: 'rgba(136,135,132,0.1)',
+      badge: '— Sem consumo', emoji: '💧',
+      titulo: 'Nenhum álcool consumido',
+      texto: 'A mesa ficou no suco! Zero álcool registrado. Saúde em dia e cabeça no lugar.',
+      dicas: []
+    },
+    {
+      min: 0.01, max: 10,
+      cor: '#5ec48a', corbg: 'rgba(94,196,138,0.1)',
+      badge: 'Nível 1 — Levíssimo', emoji: '😊',
+      titulo: 'Apenas um gole simbólico',
+      texto: 'Consumo mínimo, bem abaixo de qualquer limiar de efeito perceptível. O organismo metaboliza isso com facilidade e sem impacto algum.',
+      dicas: [
+        { icon: '✓', texto: 'Dirigir: totalmente seguro' },
+        { icon: '✓', texto: 'Dentro dos limites da OMS para qualquer perfil' }
+      ]
+    },
+    {
+      min: 10.01, max: 14,
+      cor: '#5ec48a', corbg: 'rgba(94,196,138,0.08)',
+      badge: 'Nível 2 — Leve', emoji: '🙂',
+      titulo: 'Consumo tranquilo',
+      texto: 'Um drinque social clássico. Pode haver leve relaxamento, mas sem comprometimento físico ou cognitivo relevante. A OMS classifica como baixo risco.',
+      dicas: [
+        { icon: '✓', texto: 'Dentro do limite diário recomendado pela OMS (14g)' },
+        { icon: '↗', texto: 'Beba água entre as bebidas para manter a hidratação' }
+      ]
+    },
+    {
+      min: 14.01, max: 28,
+      cor: '#e8c76a', corbg: 'rgba(232,199,106,0.1)',
+      badge: 'Nível 3 — Moderado', emoji: '😐',
+      titulo: 'Já deu pra sentir',
+      texto: 'O álcool já está fazendo efeito. Raciocínio um pouco mais lento, reações levemente reduzidas, desinibição perceptível. Ainda "social", mas exige atenção.',
+      dicas: [
+        { icon: '⚠', texto: 'Dirigir não é recomendado — reflexos já são afetados' },
+        { icon: '↗', texto: 'Coma algo e alterne com água' },
+        { icon: '✓', texto: 'Ainda dentro do limite masculino da OMS (28g/dia)' }
+      ]
+    },
+    {
+      min: 28.01, max: 50,
+      cor: '#e8a84a', corbg: 'rgba(232,168,74,0.1)',
+      badge: 'Nível 4 — Alto', emoji: '😶',
+      titulo: 'Já passou do ponto',
+      texto: 'Acima dos limites recomendados pela OMS para qualquer perfil. Coordenação comprometida, julgamento prejudicado, fala mais lenta. O fígado está trabalhando no limite.',
+      dicas: [
+        { icon: '✗', texto: 'Não dirija — ponto final' },
+        { icon: '↗', texto: 'Beba bastante água e coma alguma coisa' },
+        { icon: '↗', texto: 'Considere encerrar o consumo por hoje' }
+      ]
+    },
+    {
+      min: 50.01, max: 80,
+      cor: '#e86060', corbg: 'rgba(232,96,96,0.1)',
+      badge: 'Nível 5 — Muito alto', emoji: '😵',
+      titulo: 'Isso é sinal vermelho',
+      texto: 'Nível elevado de intoxicação. Equilíbrio prejudicado, memória comprometida, náusea possível. O corpo está lutando para processar essa quantidade.',
+      dicas: [
+        { icon: '✗', texto: 'Não dirija — risco real de acidente grave' },
+        { icon: '✗', texto: 'Evite qualquer atividade que exija coordenação' },
+        { icon: '↗', texto: 'Água, comida e repouso imediatamente' },
+        { icon: '↗', texto: 'Não fique sozinho(a) — avise alguém de confiança' }
+      ]
+    },
+    {
+      min: 80.01, max: Infinity,
+      cor: '#c03030', corbg: 'rgba(192,48,48,0.14)',
+      badge: 'Nível 6 — Perigoso', emoji: '🚨',
+      titulo: 'Atenção: risco à saúde',
+      texto: 'Consumo muito acima de qualquer limite seguro. Risco real de intoxicação aguda, vômito, desidratação severa e perda de consciência. Cuide-se e cuide de quem está ao redor.',
+      dicas: [
+        { icon: '✗', texto: 'Não dirija — é crime e pode matar' },
+        { icon: '✗', texto: 'Não tome mais nada — nem "só mais uma"' },
+        { icon: '↗', texto: 'Água, comida e deitar de lado (posição de recuperação)' },
+        { icon: '↗', texto: 'Se alguém estiver inconsciente: ligue 192 (SAMU)' }
+      ]
+    }
+  ];
+
+  function change(key, delta) {
+    const min = key === 'pessoas' ? 1 : 0;
+    state[key] = Math.max(min, state[key] + delta);
+    document.getElementById('val-' + key).textContent = state[key];
+  }
+
+  function calcular() {
+    const totalG = state.cerv*gramas.cerv + state.caip*gramas.caip + state.cach*gramas.cach + state.outro*gramas.outro;
+    const pp = totalG / state.pessoas;
+
+    document.getElementById('r-cerv').textContent = state.cerv;
+    document.getElementById('r-caip').textContent = state.caip;
+    document.getElementById('r-cach').textContent = state.cach;
+    document.getElementById('r-outro').textContent = state.outro;
+    document.getElementById('r-cerv-g').textContent = state.cerv * gramas.cerv;
+    document.getElementById('r-caip-g').textContent = state.caip * gramas.caip;
+    document.getElementById('r-cach-g').textContent = state.cach * gramas.cach;
+    document.getElementById('r-outro-g').textContent = state.outro * gramas.outro;
+    document.getElementById('r-pessoas').textContent = state.pessoas;
+    document.getElementById('r-total-g').textContent = totalG;
+    document.getElementById('r-por-pessoa').innerHTML = pp.toFixed(1) + '<span>g</span>';
+
+    const faixa = faixas.find(f => pp >= f.min && pp <= f.max) || faixas[faixas.length - 1];
+
+    const dicasHTML = faixa.dicas.map(d =>
+      `<div class="faixa-dica"><span class="faixa-dica-icon">${d.icon}</span><span>${d.texto}</span></div>`
+    ).join('');
+
+    const wrap = document.getElementById('faixa-wrap');
+    wrap.style.setProperty('--fc', faixa.cor);
+    wrap.style.setProperty('--fc-bg', faixa.corbg);
+    wrap.innerHTML = `
+      <div class="faixa-badge">${faixa.emoji} ${faixa.badge}</div>
+      <div class="faixa-titulo">${faixa.titulo}</div>
+      <div class="faixa-texto">${faixa.texto}</div>
+      ${dicasHTML ? '<div class="faixa-dicas">' + dicasHTML + '</div>' : ''}
+    `;
+
+    const el = document.getElementById('resultado');
+    el.style.display = 'block';
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+</script>
+</body>
+</html>
